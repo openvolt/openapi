@@ -1,0 +1,1094 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API Reference",
+    "description": "Openvolt developer API",
+    "contact": {
+      "email": "don@openvolt.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.0.1"
+  },
+  "servers": [
+    {
+      "url": "https://api.openvolt.com/v1"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Meters",
+      "description": ""
+    }
+  ],
+  "paths": {
+    "/meters": {
+      "get": {
+        "tags": ["Meters"],
+        "summary": "List meters",
+        "description": "",
+        "parameters": [
+          {
+            "name": "customer_id",
+            "in": "query",
+            "description": "Filter by customer id",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "mpan",
+            "in": "query",
+            "description": "Filter by mpan",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "consent_id",
+            "in": "query",
+            "description": "Filter by consent id",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "The page number to retrieve",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "example": 1
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "description": "The maximum number of meters to retrieve per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "example": 20
+            }
+          },
+          {
+            "name": "sort_by",
+            "in": "query",
+            "description": "Sort by the given field",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["last_consumption_date", "last_scanned_date"],
+              "example": "last_consumption_date",
+              "default": "last_consumption_date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+
+      "post": {
+        "tags": ["Meters"],
+        "summary": "Create a meter",
+        "description": "Create a meter",
+        "requestBody": {
+          "description": "meter",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/meter"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+
+    "/meters/{_id}": {
+      "put": {
+        "tags": ["Meters"],
+        "summary": "Update a meter",
+        "description": "Update a meter",
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "description": "meter object id",
+            "example": "64106fcd8946e00aeaa8509f",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "meter",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/meter"
+              }
+            }
+          },
+          "required": true
+        },
+        "x-codegen-request-body-name": "meter",
+        "responses": {
+          "201": {
+            "description": "meter updated",
+            "content": {}
+          },
+          "400": {
+            "description": "invalid input, object invalid",
+            "content": {}
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Meters"],
+        "summary": "Delete a meter",
+        "description": "Delete a meter",
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "description": "meter object id",
+            "example": "613a4b5acbcc00d89f06b6c0",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+
+        "responses": {
+          "204": {
+            "description": "meter deleted",
+            "content": {}
+          },
+          "404": {
+            "description": "invalid input, object invalid",
+            "content": {}
+          }
+        }
+      },
+      "get": {
+        "tags": ["Meters"],
+        "summary": "Retrieve a meter",
+        "description": "Retrieve a meter",
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "description": "meter object id",
+            "example": "64106fcd8946e00aeaa8509f",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "meter successfully retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/meter"
+                  },
+                  "maxItems": 100
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "resource not found",
+            "content": {}
+          }
+        }
+      }
+    },
+
+    "/consents": {
+      "get": {
+        "tags": ["Consents"],
+        "summary": "List consents",
+        "description": "",
+        "parameters": [
+          {
+            "name": "customer_id",
+            "in": "query",
+            "description": "Customer ID",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "The page number to retrieve",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "example": 1
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "description": "The maximum number of consents to retrieve per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "example": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Consents"],
+        "summary": "Create a consent",
+        "description": "Create a consent",
+        "requestBody": {
+          "description": "consent",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/consent"
+              }
+            }
+          },
+          "x-codegen-request-body-name": "consent",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+
+    "/consents/{_id}": {
+      "get": {
+        "tags": ["Consents"],
+        "summary": "Retrieve a consent",
+        "description": "Retrieve a consent",
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "description": "consent object id",
+            "example": "64106fcd8946e00aeaa8509f",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "consent successfully retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/consent"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "resource not found",
+            "content": {}
+          }
+        }
+      },
+      "put": {
+        "tags": ["Consents"],
+        "summary": "Update a consent",
+        "description": "Update a consent",
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "description": "consent object id",
+            "example": "64106fcd8946e00aeaa8509f",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "consent to update",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/consent"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "consent updated",
+            "content": {}
+          },
+          "400": {
+            "description": "invalid input, object invalid",
+            "content": {}
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Consents"],
+        "summary": "Delete a consent",
+        "description": "",
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "description": "consent object id",
+            "example": "64106fcd8946e00aeaa8509f",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+
+    "/customers": {
+      "get": {
+        "tags": ["Customers"],
+        "summary": "List customers",
+        "description": "",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "description": "Customer email",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "The page number to retrieve",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "example": 1
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "description": "The maximum number of customers to retrieve per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "example": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Customers"],
+        "summary": "Create a customer",
+        "description": "Create a customer",
+        "requestBody": {
+          "description": "New Customer",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/customer"
+              }
+            }
+          },
+          "x-codegen-request-body-name": "customer",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+
+    "/customers/{_id}": {
+      "get": {
+        "tags": ["Customers"],
+        "summary": "Retrieve a customer",
+        "description": "Retrieve a customer",
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "description": "customer object id",
+            "example": "64106fcd8946e00aeaa8509f",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "customer successfully retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/customer"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "resource not found",
+            "content": {}
+          }
+        }
+      },
+      "put": {
+        "tags": ["Customers"],
+        "summary": "Update a customer",
+        "description": "Update a customer",
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "description": "customer object id",
+            "example": "64106fcd8946e00aeaa8509f",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Customer to update",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/customer"
+              }
+            }
+          },
+          "required": true
+        },
+        "x-codegen-request-body-name": "customer",
+        "responses": {
+          "201": {
+            "description": "customer updated",
+            "content": {}
+          },
+          "400": {
+            "description": "invalid input, object invalid",
+            "content": {}
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Customers"],
+        "summary": "Delete a customer",
+        "description": "Delete a customer",
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "description": "customer object id",
+            "example": "64106fcd8946e00aeaa8509f",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+
+    "/readings": {
+      "get": {
+        "tags": ["Readings"],
+        "summary": "List readings",
+        "description": "",
+        "parameters": [
+          {
+            "name": "customer_id",
+            "in": "query",
+            "description": "Filter by customer id",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "meter_id",
+            "in": "query",
+            "description": "Filter by meted id",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "mpan",
+            "in": "query",
+            "description": "mpan",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+
+          {
+            "name": "page",
+            "in": "query",
+            "description": "The page number to retrieve",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "example": 1
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "description": "The maximum number of readings to retrieve per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "example": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/readings/{_id}": {
+      "get": {
+        "tags": ["Readings"],
+        "summary": "Retrieve a reading",
+        "description": "",
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "description": "reading object id",
+            "example": "64106fcd8946e00aeaa8509f",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "reading successfully retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/reading"
+                  },
+                  "maxItems": 100
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "resource not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/intervals": {
+      "get": {
+        "tags": ["Intervals"],
+        "summary": "List intervals",
+        "description": "",
+        "parameters": [
+          {
+            "name": "mpan",
+            "in": "query",
+            "description": "Filter by mpan",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "account_id",
+            "in": "query",
+            "description": "Filter by account_id",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "meter_id",
+            "in": "query",
+            "description": "Filter by meter_id",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Filter by start_date",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2022-11-1"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "Filter by end_date",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2022-11-1"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "The page number to retrieve",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "example": 1
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "description": "The maximum number of customers to retrieve per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "example": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+
+  "security": [
+    {
+      "AuthKeyAuth": []
+    }
+  ],
+
+  "components": {
+    "securitySchemes": {
+      "AuthKeyAuth": {
+        "type": "apiKey",
+        "name": "x-api-key",
+        "in": "header"
+      }
+    },
+    "schemas": {
+      "meter": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "63ff9a20b57ccc5aa23c9f38"
+          },
+          "object": {
+            "type": "string",
+            "default": "meter"
+          },
+          "account_id": {
+            "type": "string"
+          },
+          "mpan": {
+            "type": "string",
+            "example": "10301782222"
+          },
+          "customer_id": {
+            "type": "string",
+            "example": "6404dd7cf51306004a0cabf6"
+          },
+          "consent_id": {
+            "type": "string",
+            "example": "6404dd7cf51306004a0cabf6"
+          },
+
+          "description": {
+            "type": "string",
+            "example": "Electricity meter ground floor"
+          },
+          "update_frequency": {
+            "type": "string",
+            "enum": ["hourly", "daily", "weekly", "monthly"],
+            "example": "daily"
+          },
+          "address": {
+            "type": "string",
+            "example": "One Apple Park Way, Cupertino, CA 95014, United States"
+          },
+          "last_scanned_date": {
+            "type": "string",
+            "format": "date",
+            "example": "2022-11-1"
+          },
+          "last_scanned_status": {
+            "type": "string",
+            "enum": ["success", "failure"],
+            "example": "success"
+          },
+          "data_source": {
+            "type": "string",
+            "enum": ["electralink", "dcc"],
+            "example": "electralink"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "inactive", "closed"],
+            "example": "active"
+          },
+          "notes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "content": {
+                  "type": "string"
+                },
+                "author": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "reading": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "6404dd7cf51306004a0cabf6"
+          },
+          "object": {
+            "type": "string",
+            "enum": ["reading"],
+            "default": "reading"
+          },
+          "account_id": {
+            "type": "string"
+          },
+          "customer_id": {
+            "type": "string"
+          },
+          "meter_id": {
+            "type": "string"
+          },
+          "mpan": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "example": "2022-11-1"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date",
+            "example": "2022-11-1"
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date",
+            "example": "2022-11-1"
+          },
+          "previous_reading": {
+            "type": "number"
+          },
+          "current_reading": {
+            "type": "number"
+          },
+          "total_consumption": {
+            "type": "number"
+          },
+          "consumption_units": {
+            "type": "string",
+            "enum": ["kwh"]
+          },
+          "audit_tracking": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date",
+            "example": "2022-11-1"
+          }
+        }
+      },
+      "customer": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "63f9512b67423828bc717d84"
+          },
+          "object": {
+            "type": "string",
+            "default": "customer"
+          },
+          "account_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "example": "Apple"
+          },
+          "email": {
+            "type": "string",
+            "example": "steve@apple.com"
+          },
+          "address": {
+            "type": "string",
+            "example": "One Apple Park Way, Cupertino, CA 95014, United States"
+          },
+          "logo_url": {
+            "type": "string",
+            "example": "https://en.wikipedia.org/wiki/Apple_Inc.#/media/File:Apple_logo_black.svg"
+          },
+          "notes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "content": {
+                  "type": "string"
+                },
+                "author": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date",
+                  "example": "2022-11-1"
+                }
+              }
+            }
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date",
+            "example": "2022-11-1"
+          }
+        }
+      },
+
+      "consent": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "63f9512b67423828bc717d84"
+          },
+          "object": {
+            "type": "string",
+            "default": "consent"
+          },
+          "account_id": {
+            "type": "string"
+          },
+          "customer_id": {
+            "type": "string"
+          },
+          "evidence_document": {
+            "type": "string"
+          },
+
+          "start_date": {
+            "type": "string",
+            "format": "date",
+            "example": "2022-11-1"
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date",
+            "example": "2022-11-1"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "interval": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "63f9512b67423828bc717d84"
+          },
+          "object": {
+            "type": "string",
+            "default": "interval"
+          },
+          "account_id": {
+            "type": "string"
+          },
+          "meter_id": {
+            "type": "string",
+            "example": "63f9512b67423828bc717d84"
+          },
+          "mpan": {
+            "type": "string",
+            "example": "12000111111111"
+          },
+          "start_interval": {
+            "type": "string",
+            "format": "date",
+            "example": "2022-10-1"
+          },
+          "end_interval": {
+            "type": "string",
+            "format": "date",
+            "example": "2022-10-1"
+          },
+          "source": {
+            "type": "string",
+            "enum": ["electralink", "dcc"],
+            "example": "electralink"
+          },
+
+          "consumption": {
+            "type": "number",
+            "example": "123"
+          },
+          "audit_tracking": {
+            "type": "number",
+            "example": "123"
+          }
+        }
+      },
+      "document": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "63f9512b67423828bc717d84"
+          },
+          "object": {
+            "type": "string",
+            "default": "document"
+          },
+          "file": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "string",
+                "format": "binary"
+              },
+              "content_type": {
+                "type": "string",
+                "example": "application.octet-stream"
+              },
+              "name": {
+                "type": "string",
+                "example": "london_properties.pdf"
+              }
+            }
+          },
+          "account_id": {
+            "type": "string"
+          },
+          "purpose": {
+            "type": "string",
+            "enum": ["letter_of_authority"],
+            "example": "letter_of_authority"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      }
+    }
+  }
+}
