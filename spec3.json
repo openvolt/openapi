@@ -28,7 +28,7 @@
       "get": {
         "tags": ["Meters"],
         "summary": "List meters",
-        "description": "",
+        "description": "The Meter Object contains MPAN, customer consent and scheduling information",
         "parameters": [
           {
             "name": "customer_id",
