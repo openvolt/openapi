@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "API Reference",
+    "title": "Openvolt API",
     "description": "Openvolt developer API",
     "contact": {
       "email": "don@openvolt.com"
@@ -28,7 +28,7 @@
       "get": {
         "tags": ["Meters"],
         "summary": "List meters",
-        "description": "The Meter Object contains MPAN, customer consent and scheduling information",
+        "description": "The Meter Object contains the Meter Number (often referred to as the MPAN), and other meta data such as the last time data was pulled from the meter, the update frequency, the data source, and the status of the meter.",
         "parameters": [
           {
             "name": "customer_id",
@@ -40,21 +40,81 @@
             }
           },
           {
-            "name": "mpan",
+            "name": "meter_number",
             "in": "query",
-            "description": "Filter by mpan",
+            "description": "Filter by meter number (mpan)",
             "required": false,
             "schema": {
               "type": "string"
             }
           },
           {
-            "name": "consent_id",
+            "name": "metadata",
             "in": "query",
-            "description": "Filter by consent id",
+            "description": "Use prefixed keys to filter by metadata, e.g., metadata[dynamic_meter_ref]=1234567. The key in brackets represents the metadata key, and the associated value is the metadata value to filter by.",
+            "required": false,
+            "style": "deepObject",
+            "explode": true,
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "last_data_pull_date",
+            "in": "query",
+            "description": "Filter by last_data_pull_date",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "date",
+              "example": "2022-11-1"
+            }
+          },
+          {
+            "name": "last_data_pull_status",
+            "in": "query",
+            "description": "Filter by last_data_pull_status",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["success", "failure"],
+              "example": "success"
+            }
+          },
+          {
+            "name": "update_frequency",
+            "in": "query",
+            "description": "Filter by update_frequency",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["hourly", "daily", "weekly", "monthly"],
+              "example": "daily"
+            }
+          },
+          {
+            "name": "data_source",
+            "in": "query",
+            "description": "Filter by data_source",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["electralink", "dcc"],
+              "example": "electralink"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter by status",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["active", "inactive", "closed"],
+              "example": "active"
             }
           },
           {
@@ -86,15 +146,22 @@
             "required": false,
             "schema": {
               "type": "string",
-              "enum": ["last_consumption_date", "last_scanned_date"],
-              "example": "last_consumption_date",
-              "default": "last_consumption_date"
+              "enum": ["last_data_pull_date"],
+              "example": "last_data_pull_date",
+              "default": "last_data_pull_date"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MeterListResponse"
+                }
+              }
+            }
           }
         }
       },
@@ -117,6 +184,9 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "501": {
+            "description": "Not Implemented"
           }
         }
       }
@@ -230,171 +300,6 @@
       }
     },
 
-    "/consents": {
-      "get": {
-        "tags": ["Consents"],
-        "summary": "List consents",
-        "description": "",
-        "parameters": [
-          {
-            "name": "customer_id",
-            "in": "query",
-            "description": "Customer ID",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "description": "The page number to retrieve",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "default": 1,
-              "example": 1
-            }
-          },
-          {
-            "name": "page_size",
-            "in": "query",
-            "description": "The maximum number of consents to retrieve per page",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "default": 20,
-              "example": 20
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "post": {
-        "tags": ["Consents"],
-        "summary": "Create a consent",
-        "description": "Create a consent",
-        "requestBody": {
-          "description": "consent",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/consent"
-              }
-            }
-          },
-          "x-codegen-request-body-name": "consent",
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-
-    "/consents/{_id}": {
-      "get": {
-        "tags": ["Consents"],
-        "summary": "Retrieve a consent",
-        "description": "Retrieve a consent",
-        "parameters": [
-          {
-            "name": "_id",
-            "in": "path",
-            "description": "consent object id",
-            "example": "64106fcd8946e00aeaa8509f",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-
-        "responses": {
-          "200": {
-            "description": "consent successfully retrieved",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/consent"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "resource not found",
-            "content": {}
-          }
-        }
-      },
-      "put": {
-        "tags": ["Consents"],
-        "summary": "Update a consent",
-        "description": "Update a consent",
-        "parameters": [
-          {
-            "name": "_id",
-            "in": "path",
-            "description": "consent object id",
-            "example": "64106fcd8946e00aeaa8509f",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "description": "consent to update",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/consent"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "201": {
-            "description": "consent updated",
-            "content": {}
-          },
-          "400": {
-            "description": "invalid input, object invalid",
-            "content": {}
-          }
-        }
-      },
-      "delete": {
-        "tags": ["Consents"],
-        "summary": "Delete a consent",
-        "description": "",
-        "parameters": [
-          {
-            "name": "_id",
-            "in": "path",
-            "description": "consent object id",
-            "example": "64106fcd8946e00aeaa8509f",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-
     "/customers": {
       "get": {
         "tags": ["Customers"],
@@ -408,6 +313,20 @@
             "required": false,
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "metadata",
+            "in": "query",
+            "description": "Use prefixed keys to filter by metadata, e.g., metadata[dynamic_cust_ref]=1234567. The key in brackets represents the metadata key, and the associated value is the metadata value to filter by.",
+            "required": false,
+            "style": "deepObject",
+            "explode": true,
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
             }
           },
           {
@@ -435,7 +354,14 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerListResponse"
+                }
+              }
+            }
           }
         }
       },
@@ -561,16 +487,25 @@
       }
     },
 
-    "/readings": {
+    "/interval-data": {
       "get": {
-        "tags": ["Readings"],
-        "summary": "List readings",
+        "tags": ["Interval Data"],
+        "summary": "Get interval data",
         "description": "",
         "parameters": [
+          {
+            "name": "meter_number",
+            "in": "query",
+            "description": "meter_number (also known as MPAN) can be used with different customers. If filtering by this, then also filter by customer_id",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "customer_id",
             "in": "query",
-            "description": "Filter by customer id",
+            "description": "Commonly used with meter_number",
             "required": false,
             "schema": {
               "type": "string"
@@ -579,125 +514,36 @@
           {
             "name": "meter_id",
             "in": "query",
-            "description": "Filter by meted id",
+            "description": "meter_id already contains the meter_number and customer_id, so can be used on its own",
             "required": false,
             "schema": {
               "type": "string"
             }
           },
           {
-            "name": "mpan",
+            "name": "granularity",
             "in": "query",
-            "description": "mpan",
+            "description": "How granular to return the data. Half-hourly is denoted by 'hh'",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "enum": ["hh", "day", "week", "month", "year"],
+              "example": "hh",
+              "default": "hh"
+            }
+          },
+          {
+            "name": "lookback",
+            "in": "query",
+            "description": "timeperiod to lookback, in the form of a number followed by a letter, e.g. 1d, 1w, 3m, 1y",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "1d",
+              "default": "1d"
             }
           },
 
-          {
-            "name": "page",
-            "in": "query",
-            "description": "The page number to retrieve",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "default": 1,
-              "example": 1
-            }
-          },
-          {
-            "name": "page_size",
-            "in": "query",
-            "description": "The maximum number of readings to retrieve per page",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "default": 20,
-              "example": 20
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/readings/{_id}": {
-      "get": {
-        "tags": ["Readings"],
-        "summary": "Retrieve a reading",
-        "description": "",
-        "parameters": [
-          {
-            "name": "_id",
-            "in": "path",
-            "description": "reading object id",
-            "example": "64106fcd8946e00aeaa8509f",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-
-        "responses": {
-          "200": {
-            "description": "reading successfully retrieved",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/reading"
-                  },
-                  "maxItems": 100
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "resource not found",
-            "content": {}
-          }
-        }
-      }
-    },
-    "/intervals": {
-      "get": {
-        "tags": ["Intervals"],
-        "summary": "List intervals",
-        "description": "",
-        "parameters": [
-          {
-            "name": "mpan",
-            "in": "query",
-            "description": "Filter by mpan",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "account_id",
-            "in": "query",
-            "description": "Filter by account_id",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "meter_id",
-            "in": "query",
-            "description": "Filter by meter_id",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
           {
             "name": "start_date",
             "in": "query",
@@ -719,33 +565,18 @@
               "format": "date",
               "example": "2022-11-1"
             }
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "description": "The page number to retrieve",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "default": 1,
-              "example": 1
-            }
-          },
-          {
-            "name": "page_size",
-            "in": "query",
-            "description": "The maximum number of customers to retrieve per page",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "default": 20,
-              "example": 20
-            }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntervalDataListResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -767,157 +598,12 @@
       }
     },
     "schemas": {
-      "meter": {
-        "type": "object",
-        "properties": {
-          "_id": {
-            "type": "string",
-            "example": "63ff9a20b57ccc5aa23c9f38"
-          },
-          "object": {
-            "type": "string",
-            "default": "meter"
-          },
-          "account_id": {
-            "type": "string"
-          },
-          "mpan": {
-            "type": "string",
-            "example": "10301782222"
-          },
-          "customer_id": {
-            "type": "string",
-            "example": "6404dd7cf51306004a0cabf6"
-          },
-          "consent_id": {
-            "type": "string",
-            "example": "6404dd7cf51306004a0cabf6"
-          },
-
-          "description": {
-            "type": "string",
-            "example": "Electricity meter ground floor"
-          },
-          "update_frequency": {
-            "type": "string",
-            "enum": ["hourly", "daily", "weekly", "monthly"],
-            "example": "daily"
-          },
-          "address": {
-            "type": "string",
-            "example": "One Apple Park Way, Cupertino, CA 95014, United States"
-          },
-          "last_scanned_date": {
-            "type": "string",
-            "format": "date",
-            "example": "2022-11-1"
-          },
-          "last_scanned_status": {
-            "type": "string",
-            "enum": ["success", "failure"],
-            "example": "success"
-          },
-          "data_source": {
-            "type": "string",
-            "enum": ["electralink", "dcc"],
-            "example": "electralink"
-          },
-          "status": {
-            "type": "string",
-            "enum": ["active", "inactive", "closed"],
-            "example": "active"
-          },
-          "notes": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "content": {
-                  "type": "string"
-                },
-                "author": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
-      },
-      "reading": {
-        "type": "object",
-        "properties": {
-          "_id": {
-            "type": "string",
-            "example": "6404dd7cf51306004a0cabf6"
-          },
-          "object": {
-            "type": "string",
-            "enum": ["reading"],
-            "default": "reading"
-          },
-          "account_id": {
-            "type": "string"
-          },
-          "customer_id": {
-            "type": "string"
-          },
-          "meter_id": {
-            "type": "string"
-          },
-          "mpan": {
-            "type": "string"
-          },
-          "date": {
-            "type": "string",
-            "format": "date",
-            "example": "2022-11-1"
-          },
-          "start_date": {
-            "type": "string",
-            "format": "date",
-            "example": "2022-11-1"
-          },
-          "end_date": {
-            "type": "string",
-            "format": "date",
-            "example": "2022-11-1"
-          },
-          "previous_reading": {
-            "type": "number"
-          },
-          "current_reading": {
-            "type": "number"
-          },
-          "total_consumption": {
-            "type": "number"
-          },
-          "consumption_units": {
-            "type": "string",
-            "enum": ["kwh"]
-          },
-          "audit_tracking": {
-            "type": "string"
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date",
-            "example": "2022-11-1"
-          }
-        }
-      },
       "customer": {
         "type": "object",
         "properties": {
           "_id": {
             "type": "string",
-            "example": "63f9512b67423828bc717d84"
-          },
-          "object": {
-            "type": "string",
-            "default": "customer"
-          },
-          "account_id": {
-            "type": "string"
+            "example": "6404dd7cf51306004a0cabf6"
           },
           "name": {
             "type": "string",
@@ -930,6 +616,15 @@
           "address": {
             "type": "string",
             "example": "One Apple Park Way, Cupertino, CA 95014, United States"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "example": {
+              "user_defined_string": "1234-5678"
+            }
           },
           "logo_url": {
             "type": "string",
@@ -961,17 +656,116 @@
           }
         }
       },
-
-      "consent": {
+      "CustomerListResponse": {
         "type": "object",
         "properties": {
-          "_id": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/customer"
+            }
+          }
+        }
+      },
+      "meter": {
+        "type": "object",
+        "properties": {
+          "meter_number": {
             "type": "string",
-            "example": "63f9512b67423828bc717d84"
+            "example": "10301782222"
           },
-          "object": {
+          "customer_id": {
             "type": "string",
-            "default": "consent"
+            "example": "6404dd7cf51306004a0cabf6"
+          },
+          "description": {
+            "type": "string",
+            "example": "Electricity meter ground floor"
+          },
+          "address": {
+            "type": "string",
+            "example": "One Apple Park Way, Cupertino, CA 95014, United States"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "example": {
+              "user_defined_string": "1234-5678"
+            }
+          },
+          "last_data_pull_date": {
+            "type": "string",
+            "format": "date",
+            "example": "2022-11-1"
+          },
+          "last_data_pull_status": {
+            "type": "string",
+            "enum": ["success", "failure"],
+            "example": "success"
+          },
+
+          "update_frequency": {
+            "type": "string",
+            "enum": ["hourly", "daily", "weekly", "monthly"],
+            "example": "daily"
+          },
+
+          "data_source": {
+            "type": "string",
+            "enum": ["electralink", "dcc"],
+            "example": "electralink"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "inactive", "closed"],
+            "example": "active"
+          },
+          "notes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "content": {
+                  "type": "string"
+                },
+                "author": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "MeterListResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/meter"
+            }
+          }
+        }
+      },
+
+      "interval_data": {
+        "type": "object",
+        "properties": {
+          "start_interval": {
+            "type": "string",
+            "format": "date",
+            "example": "2022-10-1"
+          },
+          "consumption": {
+            "type": "number",
+            "example": "123"
+          },
+          "consumption_units": {
+            "type": "string",
+            "enum": ["kwh"],
+            "example": "kwh"
           },
           "account_id": {
             "type": "string"
@@ -979,48 +773,19 @@
           "customer_id": {
             "type": "string"
           },
-          "evidence_document": {
-            "type": "string"
-          },
-
-          "start_date": {
-            "type": "string",
-            "format": "date",
-            "example": "2022-11-1"
-          },
-          "end_date": {
-            "type": "string",
-            "format": "date",
-            "example": "2022-11-1"
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date"
-          }
-        }
-      },
-      "interval": {
-        "type": "object",
-        "properties": {
-          "_id": {
-            "type": "string",
-            "example": "63f9512b67423828bc717d84"
-          },
-          "object": {
-            "type": "string",
-            "default": "interval"
-          },
-          "account_id": {
-            "type": "string"
-          },
           "meter_id": {
             "type": "string",
             "example": "63f9512b67423828bc717d84"
           },
-          "mpan": {
+          "meter_number": {
             "type": "string",
             "example": "12000111111111"
-          },
+          }
+        }
+      },
+      "IntervalDataListResponse": {
+        "type": "object",
+        "properties": {
           "start_interval": {
             "type": "string",
             "format": "date",
@@ -1031,61 +796,17 @@
             "format": "date",
             "example": "2022-10-1"
           },
-          "source": {
+          "granularity": {
             "type": "string",
-            "enum": ["electralink", "dcc"],
-            "example": "electralink"
+            "enum": ["hh", "day", "week", "month", "year"],
+            "example": "hh",
+            "default": "hh"
           },
-
-          "consumption": {
-            "type": "number",
-            "example": "123"
-          },
-          "audit_tracking": {
-            "type": "number",
-            "example": "123"
-          }
-        }
-      },
-      "document": {
-        "type": "object",
-        "properties": {
-          "_id": {
-            "type": "string",
-            "example": "63f9512b67423828bc717d84"
-          },
-          "object": {
-            "type": "string",
-            "default": "document"
-          },
-          "file": {
-            "type": "object",
-            "properties": {
-              "data": {
-                "type": "string",
-                "format": "binary"
-              },
-              "content_type": {
-                "type": "string",
-                "example": "application.octet-stream"
-              },
-              "name": {
-                "type": "string",
-                "example": "london_properties.pdf"
-              }
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/interval_data"
             }
-          },
-          "account_id": {
-            "type": "string"
-          },
-          "purpose": {
-            "type": "string",
-            "enum": ["letter_of_authority"],
-            "example": "letter_of_authority"
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date"
           }
         }
       }
