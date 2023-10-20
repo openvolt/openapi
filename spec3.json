@@ -51,7 +51,7 @@
           {
             "name": "metadata",
             "in": "query",
-            "description": "Use prefixed keys to filter by metadata, e.g., metadata[dynamic_meter_ref]=1234567. The key in brackets represents the metadata key, and the associated value is the metadata value to filter by.",
+            "description": "Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format.",
             "required": false,
             "style": "deepObject",
             "explode": true,
@@ -169,9 +169,9 @@
       "post": {
         "tags": ["Meters"],
         "summary": "Create a meter",
-        "description": "Create a meter",
+        "description": "On the Openvolt platform, a meter is a digital representation of the physical meter that's on the side of your customer's building. It also includes information such as \n\n - Who we are accessing this meter data on_behalf_of (customer) \n - The consent information that is needed for that party to access the data (consent) \n - The schedule on how often the data is refreshed on the meter (schedule) \n - The source of the centralised datasource that the meter feeds into \n - Physical address and other information \n\n It's important to note, that it is possible to have multiple meters with the same meter_number if you are accessing data on_behalf_of different customers",
         "requestBody": {
-          "description": "meter",
+          "description": "Meter",
           "content": {
             "application/json": {
               "schema": {
@@ -304,12 +304,12 @@
       "get": {
         "tags": ["Customers"],
         "summary": "List customers",
-        "description": "",
+        "description": "This is the main search functionality for customers. You can filter by email, metadata, and page number.",
         "parameters": [
           {
             "name": "email",
             "in": "query",
-            "description": "Customer email",
+            "description": "Each customer email is unique, so filtering by customer will return a single customer.",
             "required": false,
             "schema": {
               "type": "string"
@@ -318,7 +318,7 @@
           {
             "name": "metadata",
             "in": "query",
-            "description": "Use prefixed keys to filter by metadata, e.g., metadata[dynamic_cust_ref]=1234567. The key in brackets represents the metadata key, and the associated value is the metadata value to filter by.",
+            "description": "Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format.",
             "required": false,
             "style": "deepObject",
             "explode": true,
@@ -368,7 +368,7 @@
       "post": {
         "tags": ["Customers"],
         "summary": "Create a customer",
-        "description": "Create a customer",
+        "description": "Most likely, your customers will be stored on your system with a unique id. Use the `metadata` property on the Openvolt `customer` object to store this data so you can link both objects together. \n\n Customer emails are also unique so can be used to retrieve a single customer.",
         "requestBody": {
           "description": "New Customer",
           "content": {
@@ -600,35 +600,37 @@
     "schemas": {
       "customer": {
         "type": "object",
+        "required": ["name", "email"],
         "properties": {
-          "_id": {
-            "type": "string",
-            "example": "6404dd7cf51306004a0cabf6"
-          },
           "name": {
             "type": "string",
-            "example": "Apple"
+            "example": "Apple",
+            "description": "Name of the customer. This is a required field."
           },
           "email": {
             "type": "string",
-            "example": "steve@apple.com"
+            "example": "steve@apple.com",
+            "description": "Email of the customer. This is a required field and is also unique so can be used to retrieve a single customer."
           },
           "address": {
             "type": "string",
-            "example": "One Apple Park Way, Cupertino, CA 95014, United States"
+            "example": "One Apple Park Way, Cupertino, CA 95014, United States",
+            "description": "Address of the customer. This is an optional field."
           },
           "metadata": {
             "type": "object",
             "additionalProperties": {
               "type": "string"
             },
+            "description": "Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format.",
             "example": {
               "user_defined_string": "1234-5678"
             }
           },
           "logo_url": {
             "type": "string",
-            "example": "https://en.wikipedia.org/wiki/Apple_Inc.#/media/File:Apple_logo_black.svg"
+            "example": "https://en.wikipedia.org/wiki/Apple_Inc.#/media/File:Apple_logo_black.svg",
+            "description": "URL of the customer logo. This is an optional field."
           },
           "notes": {
             "type": "array",
@@ -640,19 +642,9 @@
                 },
                 "author": {
                   "type": "string"
-                },
-                "created_at": {
-                  "type": "string",
-                  "format": "date",
-                  "example": "2022-11-1"
                 }
               }
             }
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date",
-            "example": "2022-11-1"
           }
         }
       },
@@ -669,58 +661,37 @@
       },
       "meter": {
         "type": "object",
+        "required": ["meter_number", "customer_id"],
         "properties": {
           "meter_number": {
             "type": "string",
-            "example": "10301782222"
+            "example": "10301782222",
+            "description": "Meter Number (also known as MPAN) and is a required field. This in combination with `customer_id` is unique so can be used to retrieve a single meter."
           },
           "customer_id": {
             "type": "string",
-            "example": "6404dd7cf51306004a0cabf6"
+            "example": "6404dd7cf51306004a0cabf6",
+            "description": "Customer ID and is a required field. This in combination with `meter_number` is unique so can be used to retrieve a single meter."
           },
           "description": {
             "type": "string",
-            "example": "Electricity meter ground floor"
+            "example": "Electricity meter ground floor",
+            "description": "Description of the meter. This is an optional field."
           },
           "address": {
             "type": "string",
-            "example": "One Apple Park Way, Cupertino, CA 95014, United States"
+            "example": "One Apple Park Way, Cupertino, CA 95014, United States",
+            "description": "Address of the meter. This is an optional field."
           },
           "metadata": {
             "type": "object",
             "additionalProperties": {
               "type": "string"
             },
+            "description": "Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format.",
             "example": {
               "user_defined_string": "1234-5678"
             }
-          },
-          "last_data_pull_date": {
-            "type": "string",
-            "format": "date",
-            "example": "2022-11-1"
-          },
-          "last_data_pull_status": {
-            "type": "string",
-            "enum": ["success", "failure"],
-            "example": "success"
-          },
-
-          "update_frequency": {
-            "type": "string",
-            "enum": ["hourly", "daily", "weekly", "monthly"],
-            "example": "daily"
-          },
-
-          "data_source": {
-            "type": "string",
-            "enum": ["electralink", "dcc"],
-            "example": "electralink"
-          },
-          "status": {
-            "type": "string",
-            "enum": ["active", "inactive", "closed"],
-            "example": "active"
           },
           "notes": {
             "type": "array",
