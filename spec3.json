@@ -681,7 +681,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MeterListResponse"
+                  "$ref": "#/components/schemas/ConsentListResponse"
                 }
               }
             }
@@ -696,9 +696,9 @@
         "requestBody": {
           "description": "Consent",
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/meter"
+                "$ref": "#/components/schemas/consent"
               }
             }
           },
@@ -1032,6 +1032,10 @@
             "example": {
               "user_defined_string": "1234-5678"
             }
+          },
+          "evidence_document": {
+              "type": "string",
+              "format": "binary"
           }
         }
       },
