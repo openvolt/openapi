@@ -696,7 +696,7 @@
         "requestBody": {
           "description": "Consent",
           "content": {
-            "multipart/form-data": {
+            "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/consent"
               }
@@ -707,9 +707,6 @@
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "501": {
-            "description": "Not Implemented"
           }
         }
       }
@@ -754,16 +751,125 @@
         }
       }
     },
-    "/consents/document/{_id}": {
+    "/documents": {
       "get": {
-        "tags": ["Consents"],
-        "summary": "Retrieve a consent's evidence document",
-        "description": "Retrieve a consent's evidence document",
+        "tags": ["Documents"],
+        "summary": "List documents",
+        "description": "This is the main search functionality for documents. You can filter by name, metadata, purpose.",
+        "parameters": [
+          
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Filter by name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "metadata",
+            "in": "query",
+            "description": "Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format.",
+            "required": false,
+            "style": "deepObject",
+            "explode": true,
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "purpose",
+            "in": "query",
+            "description": "Filter by purpose",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "The page number to retrieve",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "example": 1
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "description": "The maximum number of meters to retrieve per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "example": 20
+            }
+          },
+          {
+            "name": "sort_by",
+            "in": "query",
+            "description": "Sort by the given field",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["end_date, start_date"],
+              "example": "end_date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentListResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+
+      "post": {
+        "tags": ["Documents"],
+        "summary": "Create a document",
+        "description": "",
+        "requestBody": {
+          "description": "Document",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/document"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/documents/{_id}": {
+      "get": {
+        "tags": ["Documents"],
+        "summary": "Retrieve a document",
+        "description": "Retrieve a document",
         "parameters": [
           {
             "name": "_id",
             "in": "path",
-            "description": "evidence object id",
+            "description": "document object id",
             "example": "64106fcd8946e00aeaa8509f",
             "required": true,
             "schema": {
@@ -775,6 +881,45 @@
         "responses": {
           "200": {
             "description": "document successfully retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/document"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "resource not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/documents/{_id}/file": {
+      "get": {
+        "tags": ["Documents"],
+        "summary": "Retrieve a document's file",
+        "description": "Retrieve a document's file",
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "description": "document object id",
+            "example": "64106fcd8946e00aeaa8509f",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "file successfully retrieved",
             "content": {
               "application/octet-stream": {
                 "schema": {
@@ -994,13 +1139,13 @@
       },
       "consent": {
         "type": "object",
-        "required": ["evidence_document", "customer_id, start_date, end_date, type"],
+        "required": ["evidence_document_id", "customer_id, start_date, end_date, type"],
         "properties": {
   
           "customer_id": {
             "type": "string",
             "example": "6404dd7cf51306004a0cabf6",
-            "description": "Customer ID and is a required field."
+            "description": "Customer Id"
           },
           "type": {
             "type": "string",
@@ -1033,9 +1178,10 @@
               "user_defined_string": "1234-5678"
             }
           },
-          "evidence_document": {
-              "type": "string",
-              "format": "binary"
+          "evidence_document_id": {
+            "type": "string",
+            "example": "6404dd7cf51306004a0cabf6",
+            "description": "Document Id"
           }
         }
       },
@@ -1046,6 +1192,49 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/consent"
+            }
+          }
+        }
+      },
+      "document": {
+        "type": "object",
+        "required": ["file", "name, purpose, metadata"],
+        "properties": {
+  
+          "name": {
+            "type": "string",
+            "example": "Consent Name",
+            "description": "Name of the consent"
+          },
+          "purpose": {
+            "type": "string",
+            "enum": ["consent_evidence"],
+            "example": "consent_evidence",
+            "description": "Purpose of the document"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format.",
+            "example": {
+              "user_defined_string": "1234-5678"
+            }
+          },
+          "file": {
+            "type": "string",
+            "format": "binary"
+          }
+        }
+      },
+      "DocumentListResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/document"
             }
           }
         }
