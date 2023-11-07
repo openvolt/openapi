@@ -113,7 +113,7 @@
             "required": false,
             "schema": {
               "type": "string",
-              "enum": ["active", "inactive", "closed"],
+              "enum": ["active", "inactive", "pending"],
               "example": "active"
             }
           },
@@ -175,7 +175,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/meter"
+                "$ref": "#/components/schemas/MeterCreateRequest"
               }
             }
           },
@@ -214,7 +214,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/meter"
+                "$ref": "#/components/schemas/MeterResponse"
               }
             }
           },
@@ -285,7 +285,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/meter"
+                    "$ref": "#/components/schemas/MeterResponse"
                   },
                   "maxItems": 100
                 }
@@ -1015,7 +1015,7 @@
           }
         }
       },
-      "meter": {
+      "MeterCreateRequest": {
         "type": "object",
         "required": ["meter_number", "customer_id"],
         "properties": {
@@ -1027,7 +1027,12 @@
           "customer_id": {
             "type": "string",
             "example": "6404dd7cf51306004a0cabf6",
-            "description": "Customer ID and is a required field. This in combination with `meter_number` is unique so can be used to retrieve a single meter."
+            "description": "Customer ID is a required field. This in combination with `meter_number` is unique so can be used to retrieve a single meter."
+          },
+          "consent_id": {
+            "type": "string",
+            "example": "6404dd7cf51306004a0cabf6",
+            "description": "The ID of the Consent. If none is provided, the status of the meter will be set to inactive"
           },
           "description": {
             "type": "string",
@@ -1065,13 +1070,91 @@
           }
         }
       },
+      "MeterResponse": {
+        "type": "object",
+        "required": ["meter_number", "customer_id"],
+        "properties": {
+          "meter_number": {
+            "type": "string",
+            "example": "10301782222",
+            "description": "Meter Number (also known as MPAN) and is a required field. This in combination with `customer_id` is unique so can be used to retrieve a single meter."
+          },
+          "customer_id": {
+            "type": "string",
+            "example": "6404dd7cf51306004a0cabf6",
+            "description": "Customer ID is a required field. This in combination with `meter_number` is unique so can be used to retrieve a single meter."
+          },
+          "consent_id": {
+            "type": "string",
+            "example": "6404dd7cf51306004a0cabf6",
+            "description": "The ID of the Consent. If none is provided, the status of the meter will be set to inactive"
+          },
+          "description": {
+            "type": "string",
+            "example": "Electricity meter ground floor",
+            "description": "Description of the meter. This is an optional field."
+          },
+          "address": {
+            "type": "string",
+            "example": "One Apple Park Way, Cupertino, CA 95014, United States",
+            "description": "Address of the meter. This is an optional field."
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format.",
+            "example": {
+              "user_defined_string": "1234-5678"
+            }
+          },
+          "notes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "content": {
+                  "type": "string"
+                },
+                "author": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "validity_state": {
+            "type": "object",
+            "properties": {
+              "missing_consent": {
+                "type": "boolean"
+              },
+              "expired_consent": {
+                "type": "boolean"
+              },
+              "is_disabled_by_user": {
+                "type": "boolean"
+              },
+              "has_invalid_meter_number": {
+                "type": "boolean"
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "description": "The status of the meter",
+            "enum": ["active", "inactive", "pending"],
+            "example": "active"
+          }
+        }
+      },
       "MeterListResponse": {
         "type": "object",
         "properties": {
           "data": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/meter"
+              "$ref": "#/components/schemas/MeterResponse"
             }
           }
         }
