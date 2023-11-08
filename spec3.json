@@ -214,7 +214,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/MeterResponse"
+                "$ref": "#/components/schemas/MeterUpdateRequest"
               }
             }
           },
@@ -299,7 +299,47 @@
         }
       }
     },
-
+    "/meters/{_id}/update-consent": {
+      "put": {
+        "tags": ["Meters"],
+        "summary": "Update a meter",
+        "description": "Update a meter",
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "description": "meter object id",
+            "example": "64106fcd8946e00aeaa8509f",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Meter consent id",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MeterConsentUpdateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "x-codegen-request-body-name": "meter",
+        "responses": {
+          "201": {
+            "description": "meter updated",
+            "content": {}
+          },
+          "400": {
+            "description": "invalid input, object invalid",
+            "content": {}
+          }
+        }
+      }
+    },
     "/customers": {
       "get": {
         "tags": ["Customers"],
@@ -1017,7 +1057,7 @@
       },
       "MeterCreateRequest": {
         "type": "object",
-        "required": ["meter_number", "customer_id"],
+        "required": ["meter_number", "customer_id", "data_source"],
         "properties": {
           "meter_number": {
             "type": "string",
@@ -1044,6 +1084,12 @@
             "example": "One Apple Park Way, Cupertino, CA 95014, United States",
             "description": "Address of the meter. This is an optional field."
           },
+          "data_source": {
+            "type": "string",
+            "enum": ["electralink", "dcc"],
+            "example": "electralink",
+            "description": "Data source"
+          },
           "metadata": {
             "type": "object",
             "additionalProperties": {
@@ -1067,6 +1113,61 @@
                 }
               }
             }
+          }
+        }
+      },
+      "MeterUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "example": "Electricity meter ground floor",
+            "description": "Description of the meter. This is an optional field."
+          },
+          "address": {
+            "type": "string",
+            "example": "One Apple Park Way, Cupertino, CA 95014, United States",
+            "description": "Address of the meter. This is an optional field."
+          },
+          "data_source": {
+            "type": "string",
+            "enum": ["electralink", "dcc"],
+            "example": "electralink",
+            "description": "Data source"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format.",
+            "example": {
+              "user_defined_string": "1234-5678"
+            }
+          },
+          "notes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "content": {
+                  "type": "string"
+                },
+                "author": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "MeterConsentUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "consent_id": {
+            "type": "string",
+            "example": "6404dd7cf51306004a0cabf6",
+            "description": "The ID of the Consent. If none is provided, the status of the meter will be set to inactive"
           }
         }
       },
@@ -1159,7 +1260,6 @@
           }
         }
       },
-
       "interval_data": {
         "type": "object",
         "properties": {
