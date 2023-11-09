@@ -150,6 +150,50 @@
               "example": "last_data_pull_date",
               "default": "last_data_pull_date"
             }
+          },
+          {
+            "name": "missing_consent",
+            "in": "query",
+            "description": "Filter by missing_consent",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["true", "false"],
+              "example": "true"
+            }
+          },
+          {
+            "name": "expired_consent",
+            "in": "query",
+            "description": "Filter by expired_consent",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["true", "false"],
+              "example": "true"
+            }
+          },
+          {
+            "name": "is_disabled_by_user",
+            "in": "query",
+            "description": "Filter by is_disabled_by_user",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["true", "false"],
+              "example": "true"
+            }
+          },
+          {
+            "name": "has_invalid_meter_number",
+            "in": "query",
+            "description": "Filter by has_invalid_meter_number",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["true", "false"],
+              "example": "true"
+            }
           }
         ],
         "responses": {
