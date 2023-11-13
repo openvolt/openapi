@@ -346,8 +346,8 @@
     "/meters/{_id}/update-consent": {
       "put": {
         "tags": ["Meters"],
-        "summary": "Update a meter",
-        "description": "Update a meter",
+        "summary": "Update a meter consent",
+        "description": "Update a meter consent",
         "parameters": [
           {
             "name": "_id",
@@ -458,7 +458,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/customer"
+                "$ref": "#/components/schemas/CustomerCreateRequest"
               }
             }
           },
@@ -529,7 +529,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/customer"
+                "$ref": "#/components/schemas/CustomerUpdateRequest"
               }
             }
           },
@@ -871,8 +871,10 @@
             "description": "Filter by purpose",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "enum": ["consent_evidence"]
             }
+            
           },
           {
             "name": "page",
@@ -1041,6 +1043,105 @@
       "customer": {
         "type": "object",
         "required": ["name", "email"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Apple",
+            "description": "Name of the customer. This is a required field."
+          },
+          "email": {
+            "type": "string",
+            "example": "steve@apple.com",
+            "description": "Email of the customer. This is a required field and is also unique so can be used to retrieve a single customer."
+          },
+          "address": {
+            "type": "string",
+            "example": "One Apple Park Way, Cupertino, CA 95014, United States",
+            "description": "Address of the customer. This is an optional field."
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format.",
+            "example": {
+              "user_defined_string": "1234-5678"
+            }
+          },
+          "logo_url": {
+            "type": "string",
+            "example": "https://en.wikipedia.org/wiki/Apple_Inc.#/media/File:Apple_logo_black.svg",
+            "description": "URL of the customer logo. This is an optional field."
+          },
+          "notes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "content": {
+                  "type": "string"
+                },
+                "author": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "CustomerCreateRequest": {
+        "type": "object",
+        "required": ["name", "email"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Apple",
+            "description": "Name of the customer. This is a required field."
+          },
+          "email": {
+            "type": "string",
+            "example": "steve@apple.com",
+            "description": "Email of the customer. This is a required field and is also unique so can be used to retrieve a single customer."
+          },
+          "address": {
+            "type": "string",
+            "example": "One Apple Park Way, Cupertino, CA 95014, United States",
+            "description": "Address of the customer. This is an optional field."
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format.",
+            "example": {
+              "user_defined_string": "1234-5678"
+            }
+          },
+          "logo_url": {
+            "type": "string",
+            "example": "https://en.wikipedia.org/wiki/Apple_Inc.#/media/File:Apple_logo_black.svg",
+            "description": "URL of the customer logo. This is an optional field."
+          },
+          "notes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "content": {
+                  "type": "string"
+                },
+                "author": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "CustomerUpdateRequest": {
+        "type": "object",
         "properties": {
           "name": {
             "type": "string",
@@ -1366,7 +1467,7 @@
       },
       "consent": {
         "type": "object",
-        "required": ["evidence_document_id", "customer_id, start_date, end_date, type"],
+        "required": ["evidence_document_id", "customer_id", "start_date", "end_date", "type"],
         "properties": {
   
           "customer_id": {
@@ -1425,7 +1526,7 @@
       },
       "document": {
         "type": "object",
-        "required": ["file", "name, purpose, metadata"],
+        "required": ["file", "name, purpose"],
         "properties": {
   
           "name": {
