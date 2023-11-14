@@ -1311,8 +1311,9 @@
         "properties": {
           "consent_id": {
             "type": "string",
+            "nullable": true,
             "example": "6404dd7cf51306004a0cabf6",
-            "description": "The ID of the Consent. If none is provided, the status of the meter will be set to inactive"
+            "description": "The ID of the Consent. If null is provided, it will remove the consent."
           }
         }
       },
