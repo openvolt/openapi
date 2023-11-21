@@ -835,6 +835,46 @@
         }
       }
     },
+    "/consents/{_id}/archive": {
+      "post": {
+        "tags": ["Consents"],
+        "summary": "Archive a consent",
+        "description": "Archive a consent",
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "description": "consent object id",
+            "example": "64106fcd8946e00aeaa8509f",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "consent successfully archived",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "success": {
+                    "type": "boolean",
+                    "example": "true",
+                    "description": "Status of the request"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "resource not found",
+            "content": {}
+          }
+        }
+      }
+    },
     "/documents": {
       "get": {
         "tags": ["Documents"],
