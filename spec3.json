@@ -856,17 +856,7 @@
         "responses": {
           "200": {
             "description": "consent successfully archived",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "success": {
-                    "type": "boolean",
-                    "example": "true",
-                    "description": "Status of the request"
-                  }
-                }
-              }
-            }
+            "content": {}
           },
           "404": {
             "description": "resource not found",
