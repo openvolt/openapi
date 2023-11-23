@@ -384,6 +384,66 @@
         }
       }
     },
+    "/meters/{_id}/enable": {
+      "post": {
+        "tags": ["Meters"],
+        "summary": "Enable a meter",
+        "description": "Enable a meter",
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "description": "meter object id",
+            "example": "64106fcd8946e00aeaa8509f",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "x-codegen-request-body-name": "meter",
+        "responses": {
+          "200": {
+            "description": "meter enabled",
+            "content": {}
+          },
+          "400": {
+            "description": "invalid input, object invalid",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/meters/{_id}/disable": {
+      "post": {
+        "tags": ["Meters"],
+        "summary": "Disable a meter",
+        "description": "Disable a meter",
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "description": "meter object id",
+            "example": "64106fcd8946e00aeaa8509f",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "x-codegen-request-body-name": "meter",
+        "responses": {
+          "200": {
+            "description": "meter disabled",
+            "content": {}
+          },
+          "400": {
+            "description": "invalid input, object invalid",
+            "content": {}
+          }
+        }
+      }
+    },
     "/customers": {
       "get": {
         "tags": ["Customers"],
