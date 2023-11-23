@@ -1500,7 +1500,6 @@
         "type": "object",
         "required": ["evidence_document_id", "customer_id", "start_date", "end_date", "type"],
         "properties": {
-  
           "customer_id": {
             "type": "string",
             "example": "6404dd7cf51306004a0cabf6",
@@ -1562,8 +1561,8 @@
   
           "name": {
             "type": "string",
-            "example": "Consent Name",
-            "description": "Name of the consent"
+            "example": "Document Name",
+            "description": "Name of the document"
           },
           "purpose": {
             "type": "string",
