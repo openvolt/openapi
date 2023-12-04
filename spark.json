@@ -1,0 +1,125 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Openvolt Spark",
+    "description": "Openvolt Spark API",
+    "contact": {
+      "email": "don@openvolt.com"
+    },
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/internal/meter-created": {
+      "post": {
+        "tags": ["Internal"],
+        "summary": "Meter created event",
+        "description": "Handles data consumption gathering process for a new meter",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MeterCreatedPayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/internal/meter-deleted": {
+      "post": {
+        "tags": ["Internal"],
+        "summary": "Meter deleted event",
+        "description": "Stops data consumption gatheric process for a deleted meter",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MeterDeletedPayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/external/smart-pear-data-endpoint": {
+      "post": {
+        "tags": ["External"],
+        "summary": "All Smart Pear responses land here",
+        "description": "Smart Pear sends data to this endpoint for every piece of data sent to Openvolt.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SmartPearResponse"
+              }
+            }
+          },
+          "description": "Data sent on this endpoint is created by Smart Pear",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "MeterCreatedPayload": {
+        "type": "object",
+        "required": ["meter_number", "is_from_test_db"],
+        "properties": {
+          "meter_number": {
+            "type": "string",
+            "example": "1231231231231",
+            "description": "meter number of the created meter"
+          },
+          "is_from_test_db": {
+            "type": "boolean",
+            "example": false,
+            "description": "is meter created in test db or not"
+          }
+        }
+      },
+      "MeterDeletedPayload": {
+        "type": "object",
+        "required": ["meter_id", "is_from_test_db"],
+        "properties": {
+          "meter_id": {
+            "type": "string",
+            "example": "650efbc6f9a5bfc0dc88b109",
+            "description": "meter id of the deleted meter"
+          },
+          "is_from_test_db": {
+            "type": "boolean",
+            "example": false,
+            "description": "is meter deleted from test db or not"
+          }
+        }
+      },
+      "SmartPearResponse": {
+        "type": "object",
+        "properties": {
+          "client_response": {
+            "type": "object",
+            "example": {}
+          }
+        }
+      }
+    }
+  }
+}
