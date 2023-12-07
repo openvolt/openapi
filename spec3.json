@@ -1074,7 +1074,20 @@
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "link": {
+                      "type": "string",
+                      "description": "A link to re-direct the end-user to for the hosted consent flow"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
