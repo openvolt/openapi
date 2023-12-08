@@ -1073,18 +1073,12 @@
           "required": true
         },
         "responses": {
-          "200": {
+          "201": {
             "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "link": {
-                      "type": "string",
-                      "description": "A link to re-direct the end-user to for the hosted consent flow"
-                    }
-                  }
+                  "$ref": "#/components/schemas/HostedConsentFlowLink"
                 }
               }
             }
@@ -1759,9 +1753,10 @@
       "HostedConsent": {
         "type": "object",
         "properties": {
-          "_id": {
+          "id": {
             "type": "string",
-            "description": "ID of the hosted consent"
+            "description": "ID of the hosted consent",
+            "readOnly": true
           },
           "account_id": {
             "type": "string",
@@ -1894,6 +1889,15 @@
               "type": "string"
             }
           },
+        }
+      },
+      "HostedConsentFlowLink": {
+        "type": "object",
+        "properties": {
+          "link": {
+            "type": "string",
+            "description": "A link which can be used to re-direct your end-user to the hosted consent flow"
+          }
         }
       }
     }
