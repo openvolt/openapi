@@ -1164,6 +1164,85 @@
           }
         }
       },
+    },
+    "/hosted-consents/{_id}/evidence": {
+      "get": {
+        "security": [
+          {
+            "AuthKeyAuth": []
+          },
+          {
+            "HostedConsentToken": []
+          }
+        ],
+        "tags": ["Hosted Consents"],
+        "summary": "Get the evidence document for a given consent",
+        "description": "Evidence documents are provided as base64 encoded strings",
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "description": "hosted consent object id",
+            "example": "64106fcd8946e00aeaa8509f",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hosted consent successfully retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HostedConsentEvidence"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "resource not found",
+            "content": {}
+          }
+        }
+      },
+      "put": {
+        "security": [
+          {
+            "HostedConsentToken": []
+          }
+        ],
+        "tags": ["Hosted Consents"],
+        "summary": "Update the evidence document for a hosted consent",
+        "description": "Hosted consents can only be updated using the hosted consent token.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HostedConsentEvidence"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Hosted consent successfully updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HostedConsentEvidence"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "resource not found",
+            "content": {}
+          }
+        }
+      }
     }
   },
 
@@ -1856,7 +1935,7 @@
         "type": "object",
         "required": [],
         "properties": {
-          "consentee_country": {
+          "meter_country": {
             "type": "string",
             "description": "An ISO 3166 country code representing the country in which the meters are located"
           },
@@ -1864,10 +1943,6 @@
             "type": "string",
             "format": "email",
             "description": "The email provided by the consenting party in the hosted consent flow"
-          },
-          "consentee_email_note": {
-            "type": "string",
-            "description": "If the consent flow was handed off to another person to complete the consent flow, an optional note can be attached."
           },
           "consentee_job_title": {
             "type": "string",
@@ -1889,6 +1964,18 @@
               "type": "string"
             }
           },
+        }
+      },
+      "HostedConsentEvidence": {
+        "type": "object",
+        "required": [],
+        "properties": {
+          "consent_evidence": {
+            "nullable": true,
+            "type": "string",
+            "description": "Supporting documentation to help validate a given consent, this is provided as a base64 encoded string.",
+            "format": "base64"
+          }
         }
       },
       "HostedConsentFlowLink": {
