@@ -1931,48 +1931,6 @@
 
 
         }
-      },
-      "UpdateHostedConsentFlow": {
-        "type": "object",
-        "required": [],
-        "properties": {
-          "consentee_email": {
-            "type": "string",
-            "format": "email",
-            "description": "The email provided by the consenting party in the hosted consent flow"
-          },
-          "consentee_job_title": {
-            "type": "string",
-            "description": "The job title provided by the consenting party."
-          },
-          "consentee_full_name": {
-            "type": "string",
-            "description": "The full name provided by the consenting party."
-          },
-          "meter_country": {
-            "type": "string",
-            "description": "An ISO 3166 country code representing the country in which the meters are located"
-          },
-          "meter_numbers": {
-            "type": "array",
-            "description": "An array of the meter numbers that were consented to by the consenting party. NOTE: These meter numbers may not necessarily be valid on the Openvolt platform, this field just contains the raw meter numbers that were consented to.",
-            "items": {
-              "type": "string"
-            }
-          }
-        }
-      },
-      "HostedConsentEvidence": {
-        "type": "object",
-        "required": [],
-        "properties": {
-          "consent_evidence": {
-            "nullable": true,
-            "type": "string",
-            "description": "Supporting documentation to help validate a given consent, this is provided as a base64 encoded string.",
-            "format": "base64"
-          }
-        }
       }
     }
   }
