@@ -1078,7 +1078,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HostedConsentFlowLink"
+                  "$ref": "#/components/schemas/HostedConsent"
                 }
               }
             }
@@ -1127,121 +1127,6 @@
             "content": {}
           }
         }
-      },
-      "put": {
-        "security": [
-          {
-            "HostedConsentToken": []
-          }
-        ],
-        "tags": ["Hosted Consents"],
-        "summary": "Update a hosted consent",
-        "description": "Hosted consents can only be updated using the hosted consent token.",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateHostedConsentFlow"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Hosted consent successfully updated",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HostedConsent"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "resource not found",
-            "content": {}
-          }
-        }
-      },
-    },
-    "/hosted-consents/{_id}/evidence": {
-      "get": {
-        "security": [
-          {
-            "AuthKeyAuth": []
-          },
-          {
-            "HostedConsentToken": []
-          }
-        ],
-        "tags": ["Hosted Consents"],
-        "summary": "Get the evidence document for a given consent",
-        "description": "Evidence documents are provided as base64 encoded strings",
-        "parameters": [
-          {
-            "name": "_id",
-            "in": "path",
-            "description": "hosted consent object id",
-            "example": "64106fcd8946e00aeaa8509f",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Hosted consent successfully retrieved",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HostedConsentEvidence"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "resource not found",
-            "content": {}
-          }
-        }
-      },
-      "put": {
-        "security": [
-          {
-            "HostedConsentToken": []
-          }
-        ],
-        "tags": ["Hosted Consents"],
-        "summary": "Update the evidence document for a hosted consent",
-        "description": "Hosted consents can only be updated using the hosted consent token.",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/HostedConsentEvidence"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Hosted consent successfully updated",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HostedConsentEvidence"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "resource not found",
-            "content": {}
-          }
-        }
       }
     }
   },
@@ -1266,6 +1151,72 @@
       }
     },
     "schemas": {
+      "file_metadata": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "image.png",
+            "description": "The original filename of the file"
+          },
+          "file_type": {
+            "type": "string",
+            "example": "image/png",
+            "description": "The mimetype for this file"
+          },
+          "size": {
+            "type": "number",
+            "example": 449,
+            "description": "The size of the file in bytes"
+          }
+        }
+      },
+      "account": {
+        "type": "object",
+        "required": ["id","name"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "65a7f5449e51f6170f23c99f",
+            "description": "The id of the account"
+          },
+          "name": {
+            "type": "string",
+            "example": "Stark Industries",
+            "description": "The name of the account holder"
+          },
+          "theme": {
+            "type": "string",
+            "example": "#424b5c",
+            "description": "Hex colour used for white-labelling"
+          },
+          "logo": {
+            "type": "string",
+            "example": "<base64 encoded string>",
+            "description": "A base64 encoded string representing the file data"
+          },
+          "logo_metadata": {
+            "$ref": "#/components/schemas/file_metadata"
+          }
+        }
+      },
+      "ConsentMethod": {
+        "type": "string",
+        "description": "The method by which a consentee chose to perform a consent",
+        "enum": [
+          "letter-of-authority",
+          "digital-consent",
+          "third-party-digital-consent"
+        ]
+      },
+      "ConsentType": {
+        "type": "string",
+        "description": "The type of this consent, specific indicates this consent is only valid for a finite number of meters, blanket indicates this consent has no meter number restrictions",
+        "enum": [
+          "specific",
+          "blanket"
+        ]
+      },
       "customer": {
         "type": "object",
         "required": ["name", "email"],
@@ -1795,18 +1746,12 @@
       },
       "CreateHostedConsentFlow": {
         "type": "object",
-        "required": ["customer_id", "start", "expiry", "callback"],
+        "required": ["customer_id", "expiry", "callback"],
         "properties": {
           "customer_id": {
             "type": "string",
             "example": "6404dd7cf51306004a0cabf6",
             "description": "Id of the customer to whom this consent belongs to. This is a required field."
-          },
-          "start": {
-            "type": "string",
-            "format": "date",
-            "example": "2023-12-7",
-            "description": "The start date from which this consent is valid"
           },
           "expiry": {
             "type": "string",
@@ -1820,6 +1765,9 @@
             "example": "https://example.com/authorize",
             "description": "The URL that end-users should be re-directed to when leaving Openvolt's hosted consent flow."
           },
+          "consent_type": {
+            "$ref": "#/components/schemas/ConsentType"
+          },
           "meter_numbers": {
             "type": "array",
             "description": "An array of meter numbers, The hosted consent flow will prompt the end-user for their meter numbers if you do not provide them.",
@@ -1831,114 +1779,147 @@
       },
       "HostedConsent": {
         "type": "object",
+        "required": ["object","account","customer","expiry","callback","consent_type","consentee_email_verified","meter_numbers","token","created_at","hosted_consent_link","evidence","valid","id"],
         "properties": {
           "id": {
             "type": "string",
             "description": "ID of the hosted consent",
             "readOnly": true
           },
-          "account_id": {
+          "object": {
             "type": "string",
-            "description": "The Account ID the hosted consent belongs to"
+            "example": "hosted-consent",
+            "description": "The object type",
+            "readOnly": true
           },
-          "customer_id": {
-            "type": "string",
-            "description": "The Customer ID the hosted consent belongs to"
+          "account": {
+            "$ref": "#/components/schemas/account"
           },
-          "start": {
-            "type": "string",
-            "format": "datetime",
-            "description": "The start date for which this hosted consent is valid"
+          "customer": {
+            "$ref": "#/components/schemas/customer"
           },
           "expiry": {
             "type": "string",
-            "format": "datetime",
-            "description": "The expiry date for which after this hosted consent will no longer be valid"
+            "format": "date",
+            "example": "2025-01-26T12:21:27.299Z",
+            "description": "The date in which this consent expires. NOTE: The validity of a consent includes up to midnight on the day of expiry."
           },
           "callback": {
             "type": "string",
             "format": "uri",
-            "description": "The original callback used when creating this consent"
+            "example": "https://example.com/authorize",
+            "description": "The URL that end-users should be re-directed to when leaving Openvolt's hosted consent flow."
           },
-          "consentee_country": {
-            "type": "string",
-            "description": "An ISO 3166 country code representing the country in which the meters are located"
-          },
-          "consentee_email": {
-            "type": "string",
-            "format": "email",
-            "description": "The email provided by the consenting party in the hosted consent flow"
-          },
-          "consentee_email_note": {
-            "type": "string",
-            "description": "If the consent flow was handed off to another person to complete the consent flow, an optional note can be attached."
+          "consent_type": {
+            "$ref": "#/components/schemas/ConsentType"
           },
           "consentee_email_verified": {
             "type": "boolean",
-            "description": "Whether the consenting party successfully verified their email."
-          },
-          "consentee_job_title": {
-            "type": "string",
-            "description": "The job title provided by the consenting party."
-          },
-          "consentee_full_name": {
-            "type": "string",
-            "description": "The full name provided by the consenting party."
-          },
-          "consent_evidence": {
-            "type": "string",
-            "description": "Supporting documentation to help validate a given consent",
-            "format": "binary"
+            "example": false,
+            "description": "Whether or not the consentee's email has been verified for this consent",
+            "readOnly": true
           },
           "meter_numbers": {
             "type": "array",
-            "description": "An array of the meter numbers that were consented to by the consenting party. NOTE: These meter numbers may not necessarily be valid on the Openvolt platform, this field just contains the raw meter numbers that were consented to.",
+            "description": "An array of meter numbers, The hosted consent flow will prompt the end-user for their meter numbers if you do not provide them.",
             "items": {
               "type": "string"
             }
           },
           "token": {
             "type": "string",
-            "description": "This token grants the ability to modify this consent ONLY."
-          },
-          "revoke_token": {
-            "type": "string",
-            "description": "This token should be used should you wish to revoke a consent."
-          },
-          "renewal_token": {
-            "type": "string",
-            "description": "This token is used by the consenting party to renew their consent"
+            "example": "8d66b3f5-418e-4873-b79e-b5082bf5eb3a",
+            "description": "A token that aid in authenticating a hosted consent flow",
+            "readOnly": true
           },
           "created_at": {
             "type": "string",
+            "example": "2024-01-26T12:21:27.299Z",
             "format": "datetime",
-            "description": "The date at which the hosted consent was initially created"
+            "readOnly": true
+          },
+          "consent_method": {
+            "$ref": "#/components/schemas/ConsentMethod"
+          },
+
+          "consentee_full_name": {
+            "type": "string",
+            "description": "The full name provided by the consenting party.",
+            "readOnly": true
+          },
+          "consentee_job_title": {
+            "type": "string",
+            "description": "The job title provided by the consenting party.",
+            "readOnly": true
+          },
+          "consentee_email": {
+            "type": "string",
+            "format": "email",
+            "description": "The email provided by the consenting party in the hosted consent flow",
+            "readOnly": true
+          },
+
+          "consented_at": {
+            "type": "string",
+            "example": "2024-01-26T12:21:27.299Z",
+            "format": "datetime",
+            "description": "The date at which this consent was fully completed i.e. The consenting party completed the hosted consent flow successfully.",
+            "readOnly": true
+          },
+          "hosted_consent_version": {
+            "type": "string",
+            "example": "v0.0.2",
+            "description": "The version of the hosted consent frontend that was used to provide consent, this is useful in case of spot audits in the future.",
+            "readOnly": true
           },
           "updated_at": {
             "type": "string",
+            "example": "2024-01-26T12:21:27.299Z",
             "format": "datetime",
-            "description": "The date at which the hosted consent was last updated"
+            "description": "The date at which the hosted consent was last updated",
+            "readOnly": true
           },
           "revoked_at": {
             "type": "string",
+            "example": "2024-01-26T12:21:27.299Z",
             "format": "datetime",
-            "description": "The date at which this consent was revoked. This will be empty if the consent was not revoked"
+            "description": "The date at which this consent was revoked. This will be empty if the consent was not revoked",
+            "readOnly": true
           },
-          "completed_at": {
+          "hosted_consent_link": {
             "type": "string",
-            "format": "datetime",
-            "description": "The date at which this consent was fully completed i.e. The consenting party completed the hosted consent flow successfully."
+            "example": "https://consent.staging.openvolt.com/65b3a397a6907a1304...",
+            "description": "The url that users should be re-directed to in order to complete this hosted consent. These urls are unique to each hosted consent.",
+            "readOnly": true
+          },
+          "evidence": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "A base 64 encoded string of the evidence document"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "readOnly": true
+          },
+          "evidence_document_metadata": {
+            "$ref": "#/components/schemas/file_metadata"
+          },
+          "valid": {
+            "type": "boolean",
+            "example": false,
+            "description": "Whether or not this consent is considered valid, meaning it is within its expiry date, it hasn't been revoked AND it has been completed."
           }
+
+
         }
       },
       "UpdateHostedConsentFlow": {
         "type": "object",
         "required": [],
         "properties": {
-          "meter_country": {
-            "type": "string",
-            "description": "An ISO 3166 country code representing the country in which the meters are located"
-          },
           "consentee_email": {
             "type": "string",
             "format": "email",
@@ -1952,10 +1933,9 @@
             "type": "string",
             "description": "The full name provided by the consenting party."
           },
-          "consent_evidence": {
+          "meter_country": {
             "type": "string",
-            "description": "Supporting documentation to help validate a given consent",
-            "format": "binary"
+            "description": "An ISO 3166 country code representing the country in which the meters are located"
           },
           "meter_numbers": {
             "type": "array",
@@ -1963,7 +1943,7 @@
             "items": {
               "type": "string"
             }
-          },
+          }
         }
       },
       "HostedConsentEvidence": {
@@ -1975,15 +1955,6 @@
             "type": "string",
             "description": "Supporting documentation to help validate a given consent, this is provided as a base64 encoded string.",
             "format": "base64"
-          }
-        }
-      },
-      "HostedConsentFlowLink": {
-        "type": "object",
-        "properties": {
-          "link": {
-            "type": "string",
-            "description": "A link which can be used to re-direct your end-user to the hosted consent flow"
           }
         }
       }
