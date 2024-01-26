@@ -1457,6 +1457,11 @@
             "example": "electralink",
             "description": "Data source"
           },
+          "hosted_consent_id": {
+            "type": "string",
+            "example": "65b3dd10f5dd738edac11841",
+            "description": "The id of a hosted consent you wish to attach to this meter"
+          },
           "metadata": {
             "type": "object",
             "additionalProperties": {
@@ -1512,6 +1517,17 @@
             "type": "string",
             "example": "6404dd7cf51306004a0cabf6",
             "description": "The ID of the Consent. If none is provided, the status of the meter will be set to inactive"
+          },
+          "customer": {
+            "$ref": "#/components/schemas/customer"
+          },
+          "hosted_consent": {
+            "$ref": "#/components/schemas/HostedConsent"
+          },
+          "valid": {
+            "type": "boolean",
+            "example": true,
+            "description": "A computer value to let you know if this meter is valid, taking into account whether it has a valid hosted consent attached."
           },
           "description": {
             "type": "string",
