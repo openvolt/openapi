@@ -1186,7 +1186,7 @@
           "third-party-digital-consent"
         ]
       },
-      "customer": {
+      "Customer": {
         "type": "object",
         "required": ["name", "email"],
         "properties": {
@@ -1314,6 +1314,11 @@
             "example": "One Apple Park Way, Cupertino, CA 95014, United States",
             "description": "Address of the meter. This is an optional field."
           },
+          "hosted_consent_id": {
+            "type": "string",
+            "example": "65b3dd10f5dd738edac11841",
+            "description": "The id of a hosted consent you wish to attach to this meter"
+          },
           "data_source": {
             "$ref": "#/components/schemas/MeterDataSource"
           },
@@ -1370,34 +1375,6 @@
         "allOf": [
           {
             "$ref": "#/components/schemas/BaseMeter"
-          },
-          "hosted_consent_id": {
-            "type": "string",
-            "example": "65b3dd10f5dd738edac11841",
-            "description": "The id of a hosted consent you wish to attach to this meter"
-          },
-          "metadata": {
-            "type": "object",
-            "properties": {
-              "meter_number": {
-                "type": "string",
-                "example": "10301782222",
-                "description": "Meter Number (also known as MPAN) and is a required field. This in combination with `customer_id` is unique so can be used to retrieve a single meter."
-              },
-              "customer_id": {
-                "type": "string",
-                "example": "6404dd7cf51306004a0cabf6",
-                "description": "Customer ID is a required field. This in combination with `meter_number` is unique so can be used to retrieve a single meter."
-              },
-              "consent_id": {
-                "type": "string",
-                "example": "6404dd7cf51306004a0cabf6",
-                "description": "The ID of the Consent. If none is provided, the status of the meter will be set to inactive"
-              },
-              "status": {
-                "$ref": "#/components/schemas/MeterStatus"
-              }
-            }
           }
         ]
       },
@@ -1473,7 +1450,7 @@
             "description": "House number of the address of the meter"
           },
           "customer": {
-            "$ref": "#/components/schemas/customer"
+            "$ref": "#/components/schemas/Customer"
           },
           "hosted_consent": {
             "$ref": "#/components/schemas/HostedConsent"
@@ -1865,7 +1842,7 @@
             "$ref": "#/components/schemas/account"
           },
           "customer": {
-            "$ref": "#/components/schemas/customer"
+            "$ref": "#/components/schemas/Customer"
           },
           "expiry": {
             "type": "string",
