@@ -8,7 +8,7 @@
     },
     "license": {
       "name": "Apache 2.0",
-      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     },
     "version": "1.0.1"
   },
@@ -101,9 +101,7 @@
             "description": "Filter by data_source",
             "required": false,
             "schema": {
-              "type": "string",
-              "enum": ["electralink", "dcc"],
-              "example": "electralink"
+              "$ref": "#/components/schemas/MeterDataSource"
             }
           },
           {
@@ -157,9 +155,8 @@
             "description": "Filter by missing_consent",
             "required": false,
             "schema": {
-              "type": "string",
-              "enum": ["true", "false"],
-              "example": "true"
+              "type": "boolean",
+              "example": true
             }
           },
           {
@@ -168,9 +165,8 @@
             "description": "Filter by expired_consent",
             "required": false,
             "schema": {
-              "type": "string",
-              "enum": ["true", "false"],
-              "example": "true"
+              "type": "boolean",
+              "example": true
             }
           },
           {
@@ -179,9 +175,8 @@
             "description": "Filter by is_disabled_by_user",
             "required": false,
             "schema": {
-              "type": "string",
-              "enum": ["true", "false"],
-              "example": "true"
+              "type": "boolean",
+              "example": true
             }
           },
           {
@@ -190,9 +185,8 @@
             "description": "Filter by has_invalid_meter_number",
             "required": false,
             "schema": {
-              "type": "string",
-              "enum": ["true", "false"],
-              "example": "true"
+              "type": "boolean",
+              "example": true
             }
           }
         ],
@@ -209,7 +203,6 @@
           }
         }
       },
-
       "post": {
         "tags": ["Meters"],
         "summary": "Create a meter",
@@ -219,7 +212,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/MeterCreateRequest"
+                "$ref": "#/components/schemas/Meter"
               }
             }
           },
@@ -235,7 +228,6 @@
         }
       }
     },
-
     "/meters/{_id}": {
       "put": {
         "tags": ["Meters"],
@@ -258,7 +250,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/MeterUpdateRequest"
+                "$ref": "#/components/schemas/BaseMeter"
               }
             }
           },
@@ -267,12 +259,10 @@
         "x-codegen-request-body-name": "meter",
         "responses": {
           "201": {
-            "description": "meter updated",
-            "content": {}
+            "description": "meter updated"
           },
           "400": {
-            "description": "invalid input, object invalid",
-            "content": {}
+            "description": "invalid input, object invalid"
           }
         }
       },
@@ -292,15 +282,12 @@
             }
           }
         ],
-
         "responses": {
           "204": {
-            "description": "meter deleted",
-            "content": {}
+            "description": "meter deleted"
           },
           "404": {
-            "description": "invalid input, object invalid",
-            "content": {}
+            "description": "invalid input, object invalid"
           }
         }
       },
@@ -320,7 +307,6 @@
             }
           }
         ],
-
         "responses": {
           "200": {
             "description": "meter successfully retrieved",
@@ -329,7 +315,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/MeterResponse"
+                    "$ref": "#/components/schemas/Meter"
                   },
                   "maxItems": 100
                 }
@@ -337,8 +323,7 @@
             }
           },
           "404": {
-            "description": "resource not found",
-            "content": {}
+            "description": "resource not found"
           }
         }
       }
@@ -374,12 +359,10 @@
         "x-codegen-request-body-name": "meter",
         "responses": {
           "201": {
-            "description": "meter updated",
-            "content": {}
+            "description": "meter updated"
           },
           "400": {
-            "description": "invalid input, object invalid",
-            "content": {}
+            "description": "invalid input, object invalid"
           }
         }
       }
@@ -472,7 +455,6 @@
         }
       }
     },
-
     "/customers/{_id}": {
       "get": {
         "tags": ["Customers"],
@@ -490,21 +472,19 @@
             }
           }
         ],
-
         "responses": {
           "200": {
             "description": "customer successfully retrieved",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/customer"
+                  "$ref": "#/components/schemas/Customer"
                 }
               }
             }
           },
           "404": {
-            "description": "resource not found",
-            "content": {}
+            "description": "resource not found"
           }
         }
       },
@@ -538,12 +518,10 @@
         "x-codegen-request-body-name": "customer",
         "responses": {
           "201": {
-            "description": "customer updated",
-            "content": {}
+            "description": "customer updated"
           },
           "400": {
-            "description": "invalid input, object invalid",
-            "content": {}
+            "description": "invalid input, object invalid"
           }
         }
       },
@@ -570,7 +548,6 @@
         }
       }
     },
-
     "/interval-data": {
       "get": {
         "tags": ["Interval Data"],
@@ -627,7 +604,6 @@
               "default": "1d"
             }
           },
-
           {
             "name": "start_date",
             "in": "query",
@@ -772,7 +748,6 @@
           }
         }
       },
-
       "post": {
         "tags": ["Consents"],
         "summary": "Create a consent",
@@ -782,7 +757,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/consent"
+                "$ref": "#/components/schemas/Consent"
               }
             }
           },
@@ -812,7 +787,6 @@
             }
           }
         ],
-
         "responses": {
           "200": {
             "description": "consent successfully retrieved",
@@ -821,7 +795,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/consent"
+                    "$ref": "#/components/schemas/Consent"
                   },
                   "maxItems": 100
                 }
@@ -829,8 +803,7 @@
             }
           },
           "404": {
-            "description": "resource not found",
-            "content": {}
+            "description": "resource not found"
           }
         }
       }
@@ -852,15 +825,12 @@
             }
           }
         ],
-
         "responses": {
           "200": {
-            "description": "consent successfully archived",
-            "content": {}
+            "description": "consent successfully archived"
           },
           "404": {
-            "description": "resource not found",
-            "content": {}
+            "description": "resource not found"
           }
         }
       }
@@ -903,7 +873,6 @@
               "type": "string",
               "enum": ["consent_evidence"]
             }
-            
           },
           {
             "name": "page",
@@ -952,7 +921,6 @@
           }
         }
       },
-
       "post": {
         "tags": ["Documents"],
         "summary": "Create a document",
@@ -962,7 +930,7 @@
           "content": {
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/document"
+                "$ref": "#/components/schemas/Document"
               }
             }
           },
@@ -992,7 +960,6 @@
             }
           }
         ],
-
         "responses": {
           "200": {
             "description": "document successfully retrieved",
@@ -1001,15 +968,14 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/document"
+                    "$ref": "#/components/schemas/Document"
                   }
                 }
               }
             }
           },
           "404": {
-            "description": "resource not found",
-            "content": {}
+            "description": "resource not found"
           }
         }
       }
@@ -1031,7 +997,6 @@
             }
           }
         ],
-
         "responses": {
           "200": {
             "description": "file successfully retrieved",
@@ -1045,8 +1010,7 @@
             }
           },
           "404": {
-            "description": "resource not found",
-            "content": {}
+            "description": "resource not found"
           }
         }
       }
@@ -1130,13 +1094,11 @@
       }
     }
   },
-
   "security": [
     {
       "AuthKeyAuth": []
     }
   ],
-
   "components": {
     "securitySchemes": {
       "AuthKeyAuth": {
@@ -1244,14 +1206,7 @@
             "description": "Address of the customer. This is an optional field."
           },
           "metadata": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "string"
-            },
-            "description": "Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format.",
-            "example": {
-              "user_defined_string": "1234-5678"
-            }
+            "$ref": "#/components/schemas/Metadata"
           },
           "logo_url": {
             "type": "string",
@@ -1261,15 +1216,7 @@
           "notes": {
             "type": "array",
             "items": {
-              "type": "object",
-              "properties": {
-                "content": {
-                  "type": "string"
-                },
-                "author": {
-                  "type": "string"
-                }
-              }
+              "$ref": "#/components/schemas/Note"
             }
           }
         }
@@ -1294,14 +1241,7 @@
             "description": "Address of the customer. This is an optional field."
           },
           "metadata": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "string"
-            },
-            "description": "Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format.",
-            "example": {
-              "user_defined_string": "1234-5678"
-            }
+            "$ref": "#/components/schemas/Metadata"
           },
           "logo_url": {
             "type": "string",
@@ -1311,15 +1251,7 @@
           "notes": {
             "type": "array",
             "items": {
-              "type": "object",
-              "properties": {
-                "content": {
-                  "type": "string"
-                },
-                "author": {
-                  "type": "string"
-                }
-              }
+              "$ref": "#/components/schemas/Note"
             }
           }
         }
@@ -1343,14 +1275,7 @@
             "description": "Address of the customer. This is an optional field."
           },
           "metadata": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "string"
-            },
-            "description": "Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format.",
-            "example": {
-              "user_defined_string": "1234-5678"
-            }
+            "$ref": "#/components/schemas/Metadata"
           },
           "logo_url": {
             "type": "string",
@@ -1360,15 +1285,7 @@
           "notes": {
             "type": "array",
             "items": {
-              "type": "object",
-              "properties": {
-                "content": {
-                  "type": "string"
-                },
-                "author": {
-                  "type": "string"
-                }
-              }
+              "$ref": "#/components/schemas/Note"
             }
           }
         }
@@ -1379,30 +1296,14 @@
           "data": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/customer"
+              "$ref": "#/components/schemas/Customer"
             }
           }
         }
       },
-      "MeterCreateRequest": {
+      "BaseMeter": {
         "type": "object",
-        "required": ["meter_number", "customer_id", "data_source"],
         "properties": {
-          "meter_number": {
-            "type": "string",
-            "example": "10301782222",
-            "description": "Meter Number (also known as MPAN) and is a required field. This in combination with `customer_id` is unique so can be used to retrieve a single meter."
-          },
-          "customer_id": {
-            "type": "string",
-            "example": "6404dd7cf51306004a0cabf6",
-            "description": "Customer ID is a required field. This in combination with `meter_number` is unique so can be used to retrieve a single meter."
-          },
-          "consent_id": {
-            "type": "string",
-            "example": "6404dd7cf51306004a0cabf6",
-            "description": "The ID of the Consent. If none is provided, the status of the meter will be set to inactive"
-          },
           "description": {
             "type": "string",
             "example": "Electricity meter ground floor",
@@ -1414,55 +1315,61 @@
             "description": "Address of the meter. This is an optional field."
           },
           "data_source": {
-            "type": "string",
-            "enum": ["electralink", "dcc"],
-            "example": "electralink",
-            "description": "Data source"
+            "$ref": "#/components/schemas/MeterDataSource"
           },
           "metadata": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "string"
-            },
-            "description": "Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format.",
-            "example": {
-              "user_defined_string": "1234-5678"
-            }
+            "$ref": "#/components/schemas/Metadata"
           },
           "notes": {
             "type": "array",
             "items": {
-              "type": "object",
-              "properties": {
-                "content": {
-                  "type": "string"
-                },
-                "author": {
-                  "type": "string"
-                }
-              }
+              "$ref": "#/components/schemas/Note"
             }
+          },
+          "validity_state": {
+            "$ref": "#/components/schemas/MeterValidityState"
+          },
+          "provider_info": {
+            "discriminator": {
+              "propertyName": "data_source",
+              "mapping": {
+                "anexo": "#/components/schemas/AnexoProviderInfo",
+                "edsn": "#/components/schemas/EdsnProviderInfo",
+                "joulz": "#/components/schemas/JoulzProviderInfo",
+                "kenter": "#/components/schemas/KenterProviderInfo",
+                "meetbedrijf": "#/components/schemas/MeetbedrijfProviderInfo",
+                "solaredge": "#/components/schemas/SolaredgeProviderInfo"
+              }
+            },
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AnexoProviderInfo"
+              },
+              {
+                "$ref": "#/components/schemas/EdsnProviderInfo"
+              },
+              {
+                "$ref": "#/components/schemas/JoulzProviderInfo"
+              },
+              {
+                "$ref": "#/components/schemas/KenterProviderInfo"
+              },
+              {
+                "$ref": "#/components/schemas/HetMeetbedrijfProviderInfo"
+              },
+              {
+                "$ref": "#/components/schemas/SolarEdgeProviderInfo"
+              }
+            ]
           }
         }
       },
-      "MeterUpdateRequest": {
+      "Meter": {
         "type": "object",
-        "properties": {
-          "description": {
-            "type": "string",
-            "example": "Electricity meter ground floor",
-            "description": "Description of the meter. This is an optional field."
-          },
-          "address": {
-            "type": "string",
-            "example": "One Apple Park Way, Cupertino, CA 95014, United States",
-            "description": "Address of the meter. This is an optional field."
-          },
-          "data_source": {
-            "type": "string",
-            "enum": ["electralink", "dcc"],
-            "example": "electralink",
-            "description": "Data source"
+        "required": ["meter_number", "customer_id", "data_source"],
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseMeter"
           },
           "hosted_consent_id": {
             "type": "string",
@@ -1471,59 +1378,99 @@
           },
           "metadata": {
             "type": "object",
-            "additionalProperties": {
-              "type": "string"
-            },
-            "description": "Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format.",
-            "example": {
-              "user_defined_string": "1234-5678"
-            }
-          },
-          "notes": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "content": {
-                  "type": "string"
-                },
-                "author": {
-                  "type": "string"
-                }
+            "properties": {
+              "meter_number": {
+                "type": "string",
+                "example": "10301782222",
+                "description": "Meter Number (also known as MPAN) and is a required field. This in combination with `customer_id` is unique so can be used to retrieve a single meter."
+              },
+              "customer_id": {
+                "type": "string",
+                "example": "6404dd7cf51306004a0cabf6",
+                "description": "Customer ID is a required field. This in combination with `meter_number` is unique so can be used to retrieve a single meter."
+              },
+              "consent_id": {
+                "type": "string",
+                "example": "6404dd7cf51306004a0cabf6",
+                "description": "The ID of the Consent. If none is provided, the status of the meter will be set to inactive"
+              },
+              "status": {
+                "$ref": "#/components/schemas/MeterStatus"
               }
             }
           }
-        }
+        ]
       },
-      "MeterConsentUpdateRequest": {
+      "MeterListResponse": {
         "type": "object",
         "properties": {
-          "consent_id": {
-            "type": "string",
-            "nullable": true,
-            "example": "6404dd7cf51306004a0cabf6",
-            "description": "The ID of the Consent. If null is provided, it will remove the consent."
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Meter"
+            }
           }
         }
       },
-      "MeterResponse": {
+      "MeterStatus": {
+        "type": "string",
+        "description": "The status of the meter",
+        "readOnly": true,
+        "enum": ["active", "inactive", "pending"],
+        "example": "active"
+      },
+      "MeterType": {
+        "type": "string",
+        "enum": ["electricity", "gas"],
+        "example": "electricity",
+        "description": "Meter type"
+      },
+      "MeterDataSource": {
+        "type": "string",
+        "enum": [
+          "electralink",
+          "dcc",
+          "anexo",
+          "edsn",
+          "joulz",
+          "kenter",
+          "meetbedrijf",
+          "solaredge"
+        ],
+        "example": "electralink",
+        "description": "Data source"
+      },
+      "MeterValidityState": {
         "type": "object",
-        "required": ["meter_number", "customer_id"],
+        "readOnly": true,
         "properties": {
-          "meter_number": {
-            "type": "string",
-            "example": "10301782222",
-            "description": "Meter Number (also known as MPAN) and is a required field. This in combination with `customer_id` is unique so can be used to retrieve a single meter."
+          "missing_consent": {
+            "type": "boolean"
           },
-          "customer_id": {
-            "type": "string",
-            "example": "6404dd7cf51306004a0cabf6",
-            "description": "Customer ID is a required field. This in combination with `meter_number` is unique so can be used to retrieve a single meter."
+          "expired_consent": {
+            "type": "boolean"
           },
-          "consent_id": {
+          "is_disabled_by_user": {
+            "type": "boolean"
+          },
+          "has_invalid_meter_number": {
+            "type": "boolean"
+          }
+        }
+      },
+      "BaseNLProviderInfo": {
+        "type": "object",
+        "properties": {
+          "postal_code": {
             "type": "string",
-            "example": "6404dd7cf51306004a0cabf6",
-            "description": "The ID of the Consent. If none is provided, the status of the meter will be set to inactive"
+            "example": "1234AB",
+            "description": "Postal code of the address of the meter",
+            "pattern": "^\\d{4}[A-Z]{2}$"
+          },
+          "house_number": {
+            "type": "string",
+            "example": "1",
+            "description": "House number of the address of the meter"
           },
           "customer": {
             "$ref": "#/components/schemas/customer"
@@ -1538,75 +1485,174 @@
           },
           "description": {
             "type": "string",
-            "example": "Electricity meter ground floor",
-            "description": "Description of the meter. This is an optional field."
+            "example": "870111222333444555",
+            "description": "EAN of the meter (18 digits, e.g. 870111222333444555)"
           },
-          "address": {
-            "type": "string",
-            "example": "One Apple Park Way, Cupertino, CA 95014, United States",
-            "description": "Address of the meter. This is an optional field."
+          "meter_type": {
+            "$ref": "#/components/schemas/MeterType"
+          }
+        }
+      },
+      "AnexoProviderInfo": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseNLProviderInfo"
           },
-          "metadata": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "string"
-            },
-            "description": "Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format.",
-            "example": {
-              "user_defined_string": "1234-5678"
-            }
-          },
-          "notes": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "content": {
-                  "type": "string"
-                },
-                "author": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "validity_state": {
+          {
             "type": "object",
             "properties": {
-              "missing_consent": {
-                "type": "boolean"
+              "meter_id": {
+                "type": "string",
+                "example": "123456789012345678",
+                "description": "The meter id for this provider"
               },
-              "expired_consent": {
-                "type": "boolean"
+              "client_id": {
+                "type": "string",
+                "example": "123456789012345678",
+                "description": "The client id for this provider"
               },
-              "is_disabled_by_user": {
-                "type": "boolean"
-              },
-              "has_invalid_meter_number": {
-                "type": "boolean"
+              "client_secret": {
+                "type": "string",
+                "example": "123456789012345678",
+                "description": "The client secret for this provider"
               }
             }
-          },
-          "status": {
-            "type": "string",
-            "description": "The status of the meter",
-            "enum": ["active", "inactive", "pending"],
-            "example": "active"
           }
-        }
+        ]
       },
-      "MeterListResponse": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/MeterResponse"
+      "EdsnProviderInfo": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseNLProviderInfo"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "meterNumber": {
+                "type": "string",
+                "example": "E0011223344556677",
+                "description": "The EDSN meter number"
+              }
             }
           }
+        ]
+      },
+      "JoulzProviderInfo": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseNLProviderInfo"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "api_key": {
+                "type": "string",
+                "example": "123456789012345678",
+                "description": "The API key for the Joulz account"
+              },
+              "subcode": {
+                "type": "string",
+                "example": "123456789012345678",
+                "description": "The Joulz subcode of the meter"
+              }
+            }
+          }
+        ]
+      },
+      "KenterProviderInfo": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseNLProviderInfo"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "username": {
+                "type": "string",
+                "example": "MyKenterUser",
+                "description": "The username for the Kenter account"
+              },
+              "password": {
+                "type": "string",
+                "example": "MyKenterPassword",
+                "description": "The password for the Kenter account"
+              }
+            }
+          }
+        ]
+      },
+      "HetMeetbedrijfProviderInfo": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseNLProviderInfo"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "api_key": {
+                "type": "string",
+                "example": "123456789012345678",
+                "description": "The API key for Het Meetbedrijf account"
+              }
+            }
+          }
+        ]
+      },
+      "SolarEdgeProviderInfo": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseNLProviderInfo"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "api_key": {
+                "type": "string",
+                "example": "123456789012345678",
+                "description": "The API key for the SolarEdge account"
+              },
+              "meter_id": {
+                "type": "string",
+                "example": "123456789012345678",
+                "description": "The meter id for the SolarEdge account"
+              }
+            }
+          }
+        ]
+      },
+      "MeterConsentUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "consent_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "6404dd7cf51306004a0cabf6",
+            "description": "The ID of the Consent. If null is provided, it will remove the consent."
+          }
         }
       },
-      "interval_data": {
+      "Metadata": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        },
+        "description": "Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format.",
+        "example": {
+          "user_defined_string": "1234-5678"
+        }
+      },
+      "Note": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string"
+          },
+          "author": {
+            "type": "string"
+          }
+        }
+      },
+      "IntervalData": {
         "type": "object",
         "properties": {
           "start_interval": {
@@ -1661,12 +1707,12 @@
           "data": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/interval_data"
+              "$ref": "#/components/schemas/IntervalData"
             }
           }
         }
       },
-      "consent": {
+      "Consent": {
         "type": "object",
         "required": ["evidence_document_id", "customer_id", "start_date", "end_date", "type"],
         "properties": {
@@ -1697,14 +1743,7 @@
             "example": "2022-10-1"
           },
           "metadata": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "string"
-            },
-            "description": "Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format.",
-            "example": {
-              "user_defined_string": "1234-5678"
-            }
+            "$ref": "#/components/schemas/Metadata"
           },
           "evidence_document_id": {
             "type": "string",
@@ -1719,16 +1758,15 @@
           "data": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/consent"
+              "$ref": "#/components/schemas/Consent"
             }
           }
         }
       },
-      "document": {
+      "Document": {
         "type": "object",
-        "required": ["file", "name, purpose"],
+        "required": ["file", "name", "purpose"],
         "properties": {
-  
           "name": {
             "type": "string",
             "example": "Document Name",
@@ -1741,14 +1779,7 @@
             "description": "Purpose of the document"
           },
           "metadata": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "string"
-            },
-            "description": "Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format.",
-            "example": {
-              "user_defined_string": "1234-5678"
-            }
+            "$ref": "#/components/schemas/Metadata"
           },
           "file": {
             "type": "string",
@@ -1762,7 +1793,7 @@
           "data": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/document"
+              "$ref": "#/components/schemas/Document"
             }
           }
         }
