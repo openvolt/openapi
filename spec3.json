@@ -1200,6 +1200,21 @@
           }
         }
       },
+      "Country": {
+        "type": "string",
+        "description": "An ISO 3166 compliant country code",
+        "enum": [
+          "GB"
+        ]
+      },
+      "ConsentFlowType": {
+        "type": "string",
+        "description": "The flow the user will use to provide consent",
+        "enum": [
+          "gb.commercial.blanket",
+          "gb.domestic.specific"
+        ]
+      },
       "ConsentMethod": {
         "type": "string",
         "description": "The method by which a consentee chose to perform a consent",
@@ -1207,14 +1222,6 @@
           "letter-of-authority",
           "digital-consent",
           "third-party-digital-consent"
-        ]
-      },
-      "ConsentType": {
-        "type": "string",
-        "description": "The type of this consent, specific indicates this consent is only valid for a finite number of meters, blanket indicates this consent has no meter number restrictions",
-        "enum": [
-          "specific",
-          "blanket"
         ]
       },
       "customer": {
@@ -1762,7 +1769,7 @@
       },
       "CreateHostedConsentFlow": {
         "type": "object",
-        "required": ["customer_id", "expiry", "callback"],
+        "required": ["customer_id", "expiry", "redirect_url", "flow_type"],
         "properties": {
           "customer_id": {
             "type": "string",
@@ -1775,14 +1782,11 @@
             "example": "2024-12-7",
             "description": "The date in which this consent expires. NOTE: The validity of a consent includes up to midnight on the day of expiry."
           },
-          "callback": {
+          "redirect_url": {
             "type": "string",
             "format": "uri",
             "example": "https://example.com/authorize",
             "description": "The URL that end-users should be re-directed to when leaving Openvolt's hosted consent flow."
-          },
-          "consent_type": {
-            "$ref": "#/components/schemas/ConsentType"
           },
           "meter_numbers": {
             "type": "array",
@@ -1790,12 +1794,30 @@
             "items": {
               "type": "string"
             }
+          },
+          "flow_type": {
+            "$ref": "#/components/schemas/ConsentFlowType"
+          },
+          "consentee_email": {
+            "type": "string",
+            "description": "The email of the consenting party can be pre-filled"
+          },
+          "consentee_full_name": {
+            "type": "string",
+            "description": "The full name of the consenting party can be pre-filled"
+          },
+          "consentee_job_title": {
+            "type": "string",
+            "description": "The job title of the consenting party can be pre-filled"
+          },
+          "consent_method": {
+            "$ref": "#/components/schemas/ConsentMethod"
           }
         }
       },
       "HostedConsent": {
         "type": "object",
-        "required": ["object","account","customer","expiry","callback","consent_type","consentee_email_verified","meter_numbers","token","created_at","hosted_consent_link","evidence","valid","id"],
+        "required": ["object","account","customer","expiry","callback","flow_type","consentee_email_verified","meter_numbers","token","created_at","hosted_consent_link","evidence","valid","id"],
         "properties": {
           "id": {
             "type": "string",
@@ -1826,8 +1848,8 @@
             "example": "https://example.com/authorize",
             "description": "The URL that end-users should be re-directed to when leaving Openvolt's hosted consent flow."
           },
-          "consent_type": {
-            "$ref": "#/components/schemas/ConsentType"
+          "flow_type": {
+            "$ref": "#/components/schemas/ConsentFlowType"
           },
           "consentee_email_verified": {
             "type": "boolean",
@@ -1909,15 +1931,9 @@
             "readOnly": true
           },
           "evidence": {
-            "oneOf": [
-              {
-                "type": "string",
-                "description": "A base 64 encoded string of the evidence document"
-              },
-              {
-                "type": "null"
-              }
-            ],
+            "nullable": true,
+            "type": "string",
+            "description": "A base 64 encoded string of the evidence document",
             "readOnly": true
           },
           "evidence_document_metadata": {
